@@ -35,8 +35,6 @@ wss.on("connection", (ws) => {
     }
   });
 
-  // const curPos = robot.getMousePos();
-
   // when client disconnects
   ws.on("close", () => {
     console.log("disconnected");
@@ -45,7 +43,7 @@ wss.on("connection", (ws) => {
 
 server.listen(PORT, () => {
   const net = networkInterfaces();
-  // const ip = net["wlp3s0"][0].address || "Cannot find ip";
-  const ip = net["Wi-Fi"][0].address || "Cannot find ip";
+  // const ip = net["wlp3s0"][0].address;
+  const ip = net["Wi-Fi"][0].address;
   console.log(`IP: ${ip}\nPORT:${PORT}`);
 });
