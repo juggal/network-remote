@@ -30,15 +30,19 @@ class _AddressState extends State<Address> {
     channel = IOWebSocketChannel.connect(Uri.parse(uri));
 
     channel.stream.listen(
-      null,
-      onError: (error) => setState(() => this._showError = true),
+      (event) {
+        setState(() {
+          this._isLoading = false;
+        });
+
+        Navigator.pushReplacementNamed(context, '/home', arguments: channel);
+      },
+      onError: (error) => setState(() {
+        this._showError = true;
+        this._isLoading = false;
+      }),
       cancelOnError: true,
     );
-
-    setState(() {
-      this._isLoading = false;
-    });
-    Navigator.pushReplacementNamed(context, '/home', arguments: channel);
   }
 
   @override
