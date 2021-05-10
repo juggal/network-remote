@@ -14,6 +14,7 @@ class _AddressState extends State<Address> {
   final String protocol = "ws";
   IOWebSocketChannel channel;
   bool _isLoading = false;
+  bool _showError = false;
 
   void handleSubmit() {
     // save current state and extract values
@@ -28,6 +29,15 @@ class _AddressState extends State<Address> {
     final String uri = "$protocol://$ipAddress:$port";
     channel = IOWebSocketChannel.connect(Uri.parse(uri));
 
+    channel.stream.listen(
+      null,
+      onError: (error) => setState(() => this._showError = true),
+      cancelOnError: true,
+    );
+
+    setState(() {
+      this._isLoading = false;
+    });
     Navigator.pushReplacementNamed(context, '/home', arguments: channel);
   }
 
@@ -37,40 +47,62 @@ class _AddressState extends State<Address> {
       body: !this._isLoading
           ? Padding(
               padding: EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextFormField(
-                      controller: this._ipController,
-                      decoration: InputDecoration(
-                        hintText: "IP Address",
-                        border: OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.number,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextFormField(
+                          controller: this._ipController,
+                          decoration: InputDecoration(
+                            hintText: "IP Address",
+                            border: OutlineInputBorder(),
+                          ),
+                          keyboardType: TextInputType.number,
+                        ),
+                        SizedBox(height: 10),
+                        TextFormField(
+                          controller: this._portController,
+                          decoration: InputDecoration(
+                            hintText: "PORT",
+                            border: OutlineInputBorder(),
+                          ),
+                          keyboardType: TextInputType.number,
+                        ),
+                        SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: this.handleSubmit,
+                          child: Text("Connect"),
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.teal,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              )),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 10),
-                    TextFormField(
-                      controller: this._portController,
-                      decoration: InputDecoration(
-                        hintText: "PORT",
-                        border: OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.number,
-                    ),
-                    SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: this.handleSubmit,
-                      child: Text("Connect"),
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.teal,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          )),
-                    ),
-                  ],
-                ),
+                  ),
+                  this._showError
+                      ? AlertDialog(
+                          title: Text('Error'),
+                          content: Text('Connection could not be estabilished'),
+                          actions: [
+                            TextButton(
+                                onPressed: () =>
+                                    setState(() => this._showError = false),
+                                child: Text("CANCEL")),
+                            TextButton(
+                              onPressed: this.handleSubmit,
+                              child: Text("RETRY"),
+                            )
+                          ],
+                          elevation: 10.0,
+                        )
+                      : Container(),
+                ],
               ),
             )
           : Center(
