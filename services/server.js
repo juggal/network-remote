@@ -10,6 +10,7 @@ const robot = require("robotjs");
 wss.on("connection", (ws) => {
   // when client connects
   console.log("a user connected");
+  ws.send(ws.OPEN);
 
   ws.on("message", (event) => {
     const eventParsed = JSON.parse(event);
