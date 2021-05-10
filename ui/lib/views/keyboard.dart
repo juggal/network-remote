@@ -1,7 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:network_remote/widgets/keyboard_keys.dart';
+import 'package:network_remote/widgets/search_bar.dart';
 import 'package:web_socket_channel/io.dart';
 
 class Keyboard extends StatelessWidget {
@@ -10,7 +9,6 @@ class Keyboard extends StatelessWidget {
   });
 
   final IOWebSocketChannel channel;
-  final TextEditingController _queryController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -19,21 +17,7 @@ class Keyboard extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          TextField(
-            controller: this._queryController,
-            decoration: InputDecoration(
-              hintText: "Write here",
-              border: OutlineInputBorder(),
-            ),
-            keyboardType: TextInputType.text,
-            onSubmitted: (value) {
-              channel.sink.add(json.encode({
-                "type": "sendText",
-                "text": value,
-              }));
-              this._queryController.clear();
-            },
-          ),
+          SearchBar(channel: channel),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -77,8 +61,13 @@ class Keyboard extends StatelessWidget {
             ],
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              KeyboardKeys(
+                icon: Icons.subtitles,
+                channel: channel,
+                keyboardKey: "c",
+              ),
               KeyboardKeys(
                 icon: Icons.settings,
                 channel: this.channel,
