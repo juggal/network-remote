@@ -29,9 +29,6 @@ class KeyboardKeys extends StatelessWidget {
       onPressed: this.handlePressed,
       style: ElevatedButton.styleFrom(
         primary: Colors.teal,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
       ),
     );
   }
