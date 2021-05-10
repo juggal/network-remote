@@ -66,7 +66,7 @@ class Keyboard extends StatelessWidget {
               KeyboardKeys(
                 icon: Icons.subtitles,
                 channel: channel,
-                keyboardKey: "c",
+                keyboardKey: "v",
               ),
               KeyboardKeys(
                 icon: Icons.settings,
