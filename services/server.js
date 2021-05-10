@@ -5,6 +5,7 @@ const { networkInterfaces } = require("os");
 const WebSocket = require("ws");
 const PORT = 8000;
 const wss = new WebSocket.Server({ server });
+const robot = require("robotjs");
 
 wss.on("connection", (ws) => {
   // when client connects
@@ -15,21 +16,21 @@ wss.on("connection", (ws) => {
 
     switch (eventParsed.type) {
       case "moveMouse":
-        console.log(`dx:${eventParsed.dx}, dy:${eventParsed.dy}`);
-        // const curPos = robot.getMousePos();
-        // robot.moveMouse(curPos.x + eventParsed.dx, curPos.y + eventParsed.dy);
+        // console.log(`dx:${eventParsed.dx}, dy:${eventParsed.dy}`);
+        const curPos = robot.getMousePos();
+        robot.moveMouse(curPos.x + eventParsed.dx, curPos.y + eventParsed.dy);
         break;
       case "mouseClick":
-        console.log("mouse clicked " + eventParsed.button);
-        // robot.mouseClick(eventParsed.button, false);
+        // console.log("mouse clicked " + eventParsed.button);
+        robot.mouseClick(eventParsed.button, false);
         break;
       case "keyTap":
-        console.log(`${eventParsed.key} pressed`);
-        // robot.keyTap(eventParsed.key);
+        // console.log(`${eventParsed.key} pressed`);
+        robot.keyTap(eventParsed.key);
         break;
       case "sendText":
-        console.log(eventParsed.text);
-        // robot.typeString(eventParsed.text);
+        // console.log(eventParsed.text);
+        robot.typeString(eventParsed.text);
         break;
     }
   });
@@ -42,7 +43,7 @@ wss.on("connection", (ws) => {
 
 server.listen(PORT, () => {
   const net = networkInterfaces();
-  const ip = net["wlp3s0"][0].address;
-  // const ip = net["Wi-Fi"][0].address;
+  // const ip = net["wlp3s0"][0].address;
+  const ip = net["Wi-Fi"][0].address;
   console.log(`IP: ${ip}\nPORT:${PORT}`);
 });
