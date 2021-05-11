@@ -24,9 +24,9 @@ class _AddressState extends State<Address> {
     this._formKey.currentState.save();
     final String ipAddress = this._ipController.text;
     final String port = this._portController.text;
+    final String uri = "$protocol://$ipAddress:$port";
 
     // connect to websocket server
-    final String uri = "$protocol://$ipAddress:$port";
     channel = IOWebSocketChannel.connect(Uri.parse(uri));
 
     channel.stream.listen(
