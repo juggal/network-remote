@@ -5,46 +5,82 @@ const { networkInterfaces } = require("os");
 const WebSocket = require("ws");
 const PORT = 8000;
 const wss = new WebSocket.Server({ server });
-const robot = require("robotjs");
 
-wss.on("connection", (ws) => {
-  // when client connects
-  console.log("a user connected");
-  ws.send(ws.OPEN);
+const args = process.argv.slice(2);
 
-  ws.on("message", (event) => {
-    const eventParsed = JSON.parse(event);
+if (args[0] == "debug") {
+  wss.on("connection", (ws) => {
+    // when client connects
+    console.log("a user connected");
+    ws.send(ws.OPEN);
 
-    switch (eventParsed.type) {
-      case "moveMouse":
-        // console.log(`dx:${eventParsed.dx}, dy:${eventParsed.dy}`);
-        const curPos = robot.getMousePos();
-        robot.moveMouse(curPos.x + eventParsed.dx, curPos.y + eventParsed.dy);
-        break;
-      case "mouseClick":
-        // console.log("mouse clicked " + eventParsed.button);
-        robot.mouseClick(eventParsed.button, false);
-        break;
-      case "keyTap":
-        // console.log(`${eventParsed.key} pressed`);
-        robot.keyTap(eventParsed.key);
-        break;
-      case "sendText":
-        // console.log(eventParsed.text);
-        robot.typeString(eventParsed.text);
-        break;
-    }
+    ws.on("message", (event) => {
+      const eventParsed = JSON.parse(event);
+
+      switch (eventParsed.type) {
+        case "moveMouse":
+          console.log(`dx:${eventParsed.dx}, dy:${eventParsed.dy}`);
+          break;
+        case "mouseClick":
+          console.log("mouse clicked " + eventParsed.button);
+          break;
+        case "keyTap":
+          console.log(`${eventParsed.key} pressed`);
+          break;
+        case "sendText":
+          console.log(eventParsed.text);
+          break;
+      }
+    });
+
+    // when client disconnects
+    ws.on("close", () => {
+      console.log("disconnected");
+    });
   });
 
-  // when client disconnects
-  ws.on("close", () => {
-    console.log("disconnected");
+  server.listen(PORT, () => {
+    const net = networkInterfaces();
+    const ip = net["wlp3s0"][0].address;
+    console.log(`IP: ${ip}\nPORT:${PORT}`);
   });
-});
+} else {
+  const robot = require("robotjs");
 
-server.listen(PORT, () => {
-  const net = networkInterfaces();
-  // const ip = net["wlp3s0"][0].address;
-  const ip = net["Wi-Fi"][0].address;
-  console.log(`IP: ${ip}\nPORT:${PORT}`);
-});
+  wss.on("connection", (ws) => {
+    // when client connects
+    console.log("a user connected");
+    ws.send(ws.OPEN);
+
+    ws.on("message", (event) => {
+      const eventParsed = JSON.parse(event);
+
+      switch (eventParsed.type) {
+        case "moveMouse":
+          const curPos = robot.getMousePos();
+          robot.moveMouse(curPos.x + eventParsed.dx, curPos.y + eventParsed.dy);
+          break;
+        case "mouseClick":
+          robot.mouseClick(eventParsed.button, false);
+          break;
+        case "keyTap":
+          robot.keyTap(eventParsed.key);
+          break;
+        case "sendText":
+          robot.typeString(eventParsed.text);
+          break;
+      }
+    });
+
+    // when client disconnects
+    ws.on("close", () => {
+      console.log("disconnected");
+    });
+  });
+
+  server.listen(PORT, () => {
+    const net = networkInterfaces();
+    const ip = net["Wi-Fi"][0].address;
+    console.log(`IP: ${ip}\nPORT:${PORT}`);
+  });
+}
