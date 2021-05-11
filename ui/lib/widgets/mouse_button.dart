@@ -5,12 +5,6 @@ import 'package:web_socket_channel/io.dart';
 
 class MouseButton extends StatelessWidget {
   final String text;
-
-  MouseButton({
-    @required this.text,
-    @required this.channel,
-  });
-
   final IOWebSocketChannel channel;
   final Map<String, String> buttonMap = {
     "LMB": "left",
@@ -18,6 +12,10 @@ class MouseButton extends StatelessWidget {
     "RMB": "right",
   };
 
+  MouseButton({
+    @required this.text,
+    @required this.channel,
+  });
   void hanlePressed() {
     channel.sink.add(json
         .encode({"type": "mouseClick", "button": this.buttonMap[this.text]}));
