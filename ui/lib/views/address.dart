@@ -28,7 +28,7 @@ class _AddressState extends State<Address> {
     http.Response response;
 
     // set base url for whole app
-    BaseUrl("$ipAddress:$port");
+    BaseUrl(ipAddress, port);
 
     try {
       response = await http.get(BaseUrl.getUri("/isalive")).timeout(
