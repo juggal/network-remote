@@ -57,7 +57,7 @@ class Keyboard extends StatelessWidget {
               ),
               KeyboardKeys(
                 icon: Icons.settings,
-                keyboardKey: "command",
+                keyboardKey: "winleft",
               ),
             ],
           ),

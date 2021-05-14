@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:http/http.dart' as http;
+import 'package:network_remote/utils/base_url.dart';
 
 class Address extends StatefulWidget {
   @override
@@ -14,7 +17,7 @@ class _AddressState extends State<Address> {
   bool _isLoading = false;
   bool _showError = false;
 
-  void handleSubmit() {
+  void handleSubmit() async {
     // save current state and extract values
     setState(() {
       this._isLoading = true;
@@ -22,7 +25,31 @@ class _AddressState extends State<Address> {
     this._formKey.currentState.save();
     final String ipAddress = this._ipController.text;
     final String port = this._portController.text;
-    final String uri = "$protocol://$ipAddress:$port";
+    http.Response response;
+
+    // set base url for whole app
+    BaseUrl("$ipAddress:$port");
+
+    try {
+      response = await http.get(BaseUrl.getUri("/isalive")).timeout(
+            Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException,
+          );
+      setState(() {
+        this._isLoading = false;
+        this._showError = false;
+      });
+    } catch (e) {
+      // print(e);
+      setState(() {
+        _showError = true;
+        _isLoading = false;
+      });
+    } finally {
+      if (!this._showError && response.statusCode == 200) {
+        Navigator.pushReplacementNamed(context, "/home");
+      }
+    }
   }
 
   @override

@@ -1,9 +1,29 @@
-import 'package:flutter/material.dart';
-import 'package:network_remote/widgets/keyboard_keys.dart';
+import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:network_remote/utils/base_url.dart';
+import 'package:network_remote/widgets/keyboard_keys.dart';
+import 'package:http/http.dart' as http;
 
 class SearchBar extends StatelessWidget {
   final TextEditingController _queryController = TextEditingController();
+
+  void handleSubmit(String value) async {
+    try {
+      await http
+          .post(BaseUrl.getUri("/keyboard/type"),
+              body: json.encode({
+                "text": value,
+              }))
+          .timeout(Duration(seconds: 1),
+              onTimeout: () => throw TimeoutException);
+    } catch (e) {
+      // Navigator.pushReplacementNamed(context, "/address");
+      print(e);
+    } finally {
+      this._queryController.clear();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +45,7 @@ class SearchBar extends StatelessWidget {
               border: OutlineInputBorder(),
             ),
             keyboardType: TextInputType.text,
-            onSubmitted: (value) {
-              // channel.sink.add(json.encode({
-              //   "type": "sendText",
-              //   "text": value,
-              // }));
-              this._queryController.clear();
-            },
+            onSubmitted: (value) => this.handleSubmit(value),
           ),
         ),
         Flexible(

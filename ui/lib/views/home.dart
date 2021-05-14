@@ -18,8 +18,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    // final IOWebSocketChannel channel =
-    //     ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
         title: Text("Network Remote"),
@@ -27,7 +25,6 @@ class _HomeState extends State<Home> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // close connection
             Navigator.pushReplacementNamed(context, '/address');
           },
         ),

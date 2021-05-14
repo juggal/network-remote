@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:network_remote/utils/base_url.dart';
 import 'package:network_remote/widgets/mouse_button.dart';
+import 'package:http/http.dart' as http;
 
 class Mouse extends StatefulWidget {
   @override
@@ -10,18 +12,24 @@ class Mouse extends StatefulWidget {
 
 class _MouseState extends State<Mouse> {
   double _prevX;
-
   double _prevY;
 
-  void hanldePointerMove(X, Y) {
+  var client = http.Client();
+
+  void hanldePointerMove(X, Y, client) async {
     double deltaX = X - this._prevX;
     double deltaY = Y - this._prevY;
 
     this._prevX = X;
     this._prevY = Y;
 
-    final data = {"type": "moveMouse", "dx": deltaX, "dy": deltaY};
-    // this.widget.channel.sink.add(json.encode(data));
+    final data = {"dx": deltaX, "dy": deltaY};
+    try {
+      await client.post(BaseUrl.getUri("/mouse/move"), body: json.encode(data));
+    } catch (e) {
+      // Navigator.pushReplacementNamed(context, "/address");
+      print(e);
+    }
   }
 
   @override
@@ -35,8 +43,8 @@ class _MouseState extends State<Mouse> {
             child: ConstrainedBox(
               constraints: BoxConstraints.tight(const Size.fromWidth(450)),
               child: Listener(
-                onPointerMove: (event) => this
-                    .hanldePointerMove(event.position.dx, event.position.dy),
+                onPointerMove: (event) => this.hanldePointerMove(
+                    event.position.dx, event.position.dy, client),
                 onPointerDown: (event) {
                   this._prevX = event.position.dx;
                   this._prevY = event.position.dy;
