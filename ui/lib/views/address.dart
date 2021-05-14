@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:web_socket_channel/io.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Address extends StatefulWidget {
@@ -11,8 +10,7 @@ class _AddressState extends State<Address> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _ipController = TextEditingController();
   final TextEditingController _portController = TextEditingController();
-  final String protocol = "ws";
-  IOWebSocketChannel channel;
+  final String protocol = "http";
   bool _isLoading = false;
   bool _showError = false;
 
@@ -25,24 +23,6 @@ class _AddressState extends State<Address> {
     final String ipAddress = this._ipController.text;
     final String port = this._portController.text;
     final String uri = "$protocol://$ipAddress:$port";
-
-    // connect to websocket server
-    channel = IOWebSocketChannel.connect(Uri.parse(uri));
-
-    channel.stream.listen(
-      (event) {
-        setState(() {
-          this._isLoading = false;
-        });
-
-        Navigator.pushReplacementNamed(context, '/home', arguments: channel);
-      },
-      onError: (error) => setState(() {
-        this._showError = true;
-        this._isLoading = false;
-      }),
-      cancelOnError: true,
-    );
   }
 
   @override

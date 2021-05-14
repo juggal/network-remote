@@ -1,11 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:web_socket_channel/io.dart';
 
 class MouseButton extends StatelessWidget {
   final String text;
-  final IOWebSocketChannel channel;
   final Map<String, String> buttonMap = {
     "LMB": "left",
     "MMB": "middle",
@@ -14,11 +12,10 @@ class MouseButton extends StatelessWidget {
 
   MouseButton({
     @required this.text,
-    @required this.channel,
   });
   void hanlePressed() {
-    channel.sink.add(json
-        .encode({"type": "mouseClick", "button": this.buttonMap[this.text]}));
+    // channel.sink.add(json
+    //     .encode({"type": "mouseClick", "button": this.buttonMap[this.text]}));
   }
 
   @override
