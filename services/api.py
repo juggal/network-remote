@@ -19,7 +19,7 @@ def mouse_move():
     dx = data["dx"]
     dy = data["dy"]
     # print(dx, dy)
-    pag.moveRel(dx, dy, duration=0.5)
+    pag.moveRel(dx, dy)
     return jsonify({
         "success": "done"
     })
@@ -59,4 +59,5 @@ def keyboard_type():
 
 
 # uncomment for debugging server
-app.run(host="localhost", port=8000, debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000, debug=True)
