@@ -2,6 +2,7 @@ import asyncio
 import websockets
 import json
 import pyautogui as pag
+import logging
 
 pag.FAILSAFE = False
 pag.PAUSE = 0
@@ -11,7 +12,6 @@ def mouse_move(message):
     data = json.loads(message)
     dx = data["dx"]
     dy = data["dy"]
-    print(dx, dy)
     pag.moveRel(dx, dy)
 
 

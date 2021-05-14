@@ -35,7 +35,6 @@ class _MouseState extends State<Mouse> {
     this._prevY = Y;
 
     final data = {"dx": deltaX, "dy": deltaY};
-    print(data);
 
     channel.sink.add(json.encode(data));
   }

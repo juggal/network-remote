@@ -48,6 +48,10 @@ class _AddressState extends State<Address> {
     } finally {
       if (!this._showError && response.statusCode == 200) {
         Navigator.pushReplacementNamed(context, "/home");
+      } else {
+        setState(() {
+          _showError = true;
+        });
       }
     }
   }
