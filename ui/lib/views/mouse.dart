@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:network_remote/utils/base_url.dart';
+import 'package:network_remote/utils/connection.dart';
 import 'package:network_remote/widgets/mouse_button.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
@@ -17,13 +17,15 @@ class _MouseState extends State<Mouse> {
 
   @override
   void initState() {
-    channel = IOWebSocketChannel.connect(BaseUrl.getSocketUri("8001"));
+    Connection.setChannel = "8001";
+    channel = Connection.getChannel;
     super.initState();
   }
 
   @override
   void dispose() {
     channel.sink.close(status.normalClosure);
+    Connection.channel = null;
     super.dispose();
   }
 
