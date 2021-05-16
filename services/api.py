@@ -29,7 +29,7 @@ def mouse_move():
 def mouse_click():
     data = json.loads(request.data)
     button = data["button"]
-    print(button)
+    # print(button)
     pag.click(button=button)
     return jsonify({
         "success": "done"
@@ -40,7 +40,7 @@ def mouse_click():
 def keyboard_press():
     data = json.loads(request.data)
     key = data["key"]
-    print(key)
+    # print(key)
     pag.press(key)
     return jsonify({
         "success": "done"
@@ -51,7 +51,7 @@ def keyboard_press():
 def keyboard_type():
     data = json.loads(request.data)
     text = data["text"]
-    print(text)
+    # print(text)
     pag.write(text)
     return jsonify({
         "success": "done"
